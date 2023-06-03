@@ -1,0 +1,143 @@
+package umg.compiladores;
+import java_cup.runtime.*;//contiene todas las clases para que funcione el analizador
+
+terminal  LLAVES_ABRE, LLAVES_CIERRA, CORCHETES_ABRE, CORCHETES_CIERRA,PUNTO,PUNTO_Y_COMA,PARENTESIS_ABRE,PARENTESIS_CIERRA,
+            SUMA,RESTA,MULTIPLICACION,DIAGONAL_DER,AND,OR,YY,PORCIENTO,FLOAT,DOUBLE,INT,LONG,SHORT,STRING,
+            BOOLEAN,IF,ELSE,SWITCH,CASE,BREAK,DEFAULT,FOR,WHILE,DO,SCANNER,NEXT,NEXTINT,NEXTFLOAT,NEXTDOUBLE,NEXTBOOLEAN,
+            NEXTLINE,NEXTBYTE,SYSTEM,OUT,PRINTLN,PRINTL,RETURN,NUMERO,ID,COMBINACIONID, DOS_PUNTOS, MAYOR_QUE , MAYOR_O_IGUAL_QUE, 
+            MENOR_QUE, MENOR_O_IGUAL_QUE , IGUAL, DIFERENTE ;
+
+non terminal  expr_list, expr , inst, declaracion, declaracion_variable,asignacion_variable, asignacion_operacion_aritmetica, asignacion_relaciones,
+               asignacion_logicas, imprimir_pantalla , ciclo_if , ciclo_do_while, ciclo_while ,declaracion_switch,cases, ciclo_for,  expresion, 
+            expresion_aritmetica, term ,factor,  tipo, identificador, numero, numero_entero, numero_decimal,relacion ,operador_condicional,case,casos,inicializar_for,condicion_for,incremento;
+
+
+
+
+start with inst ;
+
+inst ::=    declaracion 
+            | declaracion inst
+;
+
+declaracion ::=     declaracion_variable 
+                    | asignacion_variable 
+                    | asignacion_operacion_aritmetica 
+                    | asignacion_relaciones 
+                    | asignacion_logicas 	
+                    | imprimir_pantalla 
+                    |ciclo_if
+                    |ciclo_while
+                    |declaracion_switch
+                    |ciclo_for
+                    |ciclo_while
+                    |ciclo_do_while
+                    
+;
+
+declaracion_variable  	::=   tipo  identificador PUNTO_Y_COMA 
+;
+asignacion_variable    	::=  identificador IGUAL expresion PUNTO_Y_COMA
+;
+asignacion_operacion_aritmetica ::=  identificador IGUAL expresion_aritmetica PUNTO_Y_COMA
+;
+asignacion_relaciones 	::=  expresion  MAYOR_QUE expresion PUNTO_Y_COMA
+                                |expresion  MAYOR_O_IGUAL_QUE expresion PUNTO_Y_COMA
+                                | expresion  MENOR_QUE expresion PUNTO_Y_COMA
+                                | expresion  MENOR_O_IGUAL_QUE expresion PUNTO_Y_COMA
+                                |expresion  IGUAL expresion PUNTO_Y_COMA
+                                |expresion  DIFERENTE expresion PUNTO_Y_COMA
+;                   
+asignacion_logicas 	::=   declaracion  AND declaracion PUNTO_Y_COMA
+                            | declaracion OR declaracion PUNTO_Y_COMA
+                                                          
+;
+imprimir_pantalla 	::=   SYSTEM PUNTO OUT PUNTO PRINTLN PARENTESIS_ABRE expresion PARENTESIS_CIERRA  PUNTO_Y_COMA
+;
+ciclo_if 	::=  	IF PARENTESIS_ABRE  expresion PARENTESIS_CIERRA  declaracion
+  			| IF PARENTESIS_ABRE expresion PARENTESIS_CIERRA declaracion    ELSE   declaracion
+;
+ciclo_while 	::=  	WHILE PARENTESIS_ABRE  expresion PARENTESIS_CIERRA  declaracion
+ ;
+declaracion_switch ::=   SWITCH PARENTESIS_ABRE identificador PARENTESIS_CIERRA  LLAVES_ABRE  cases LLAVES_CIERRA
+;
+cases   ::=   casos SUMA
+;
+casos ::=  CASE  numero DOS_PUNTOS declaracion PUNTO_Y_COMA   BREAK PUNTO_Y_COMA
+	| DEFAULT DOS_PUNTOS  declaracion
+;
+ciclo_for  ::=  FOR PARENTESIS_ABRE inicializar_for PUNTO_Y_COMA condicion_for PUNTO_Y_COMA  incremento PARENTESIS_CIERRA  LLAVES_ABRE declaracion LLAVES_CIERRA
+; 
+inicializar_for  ::=     declaracion_variable  PUNTO_Y_COMA
+                        | asignacion_variable   PUNTO_Y_COMA
+                        | asignacion_operacion_aritmetica PUNTO_Y_COMA
+;
+condicion_for ::=  expresion PUNTO_Y_COMA   //la expresión hay que regresarlo a declaración;
+;
+incremento ::=    asignacion_variable   | asignacion_operacion_aritmetica
+;
+ciclo_do_while  ::=    DO LLAVES_ABRE declaracion LLAVES_CIERRA  WHILE  PARENTESIS_ABRE expresion PARENTESIS_CIERRA  PUNTO_Y_COMA
+;
+expresion     ::=          expresion_aritmetica
+                            | identificador
+                            | numero
+;
+expresion_aritmetica ::=   term
+			|term SUMA expresion_aritmetica
+			|term RESTA expresion_aritmetica
+                        |term MULTIPLICACION expresion_aritmetica
+                        |term DIAGONAL_DER expresion_aritmetica
+                           |declaracion
+;
+term ::=    factor
+;
+factor ::=      identificador
+		|numero
+		|expresion_aritmetica
+		|PARENTESIS_ABRE  expresion_aritmetica  PARENTESIS_CIERRA
+;
+tipo ::=    INT
+            |DOUBLE
+            |FLOAT
+            |LONG
+            |SHORT
+            |STRING
+            |BOOLEAN
+;
+
+identificador    ::=      ID
+;
+numero           ::=       numero_entero
+                    | numero_decimal
+;
+numero_entero ::=        NUMERO
+;
+numero_decimal ::=       NUMERO PUNTO NUMERO
+
+
+
+
+
+
+
+
+
+
+
+
+//*************************************************************
+/*
+
+//precedence left SUMA, RESTA;
+//precedence left MULTIPLICACION;
+
+
+//GRAMATICA
+start with expr_list;
+
+expr_list ::= expr_list expr PUNTO_Y_COMA 
+              | expr PUNTO_Y_COMA
+;
+expr    ::= expr SUMA expr | expr RESTA expr | expr MULTIPLICACION expr | PARENTESIS_ABRE expr PARENTESIS_CIERRA | NUMERO
+;
+*/
